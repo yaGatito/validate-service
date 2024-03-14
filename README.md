@@ -31,4 +31,4 @@ Acceptable body:
 ```
 
 ## Configuration
-Specify `-e VALIDATE_SERVICE_PORT=[desired-INTERNAL-port]` and `-p [desired-OUTER-port]:[desired-INTERNAL-port]` flags on `docker run` to configure internal and outer ports of the container.
+Specify `-e VALIDATE_SERVICE_PORT=[INTERNAL-port]` and `-p [OUTER-port]:[INTERNAL-port]` flags on `docker run` to configure internal and outer ports of the container.
