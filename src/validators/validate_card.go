@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"regexp"
 	"time"
 	"validate-service/src/models"
 	valerror "validate-service/src/models/error"
@@ -20,6 +21,13 @@ func ValidateCard(card models.Card) (bool, *valerror.Error) {
 		return false, &valerror.Error{
 			Code:    valerror.Empty,
 			Message: valerror.EmptyMessage,
+		}
+	}
+
+	if isValidNumber(card) {
+		return false, &valerror.Error{
+			Code:    valerror.InvalidNumber,
+			Message: valerror.InvalidNumberMessage,
 		}
 	}
 
@@ -60,4 +68,10 @@ func isYearInvalid(card models.Card) bool {
 
 func isEmpty(card models.Card) bool {
 	return card.CardNumber == ""
+}
+
+func isValidNumber(card models.Card) bool {
+	pattern := `^\d{12,16}$`
+	regex := regexp.MustCompile(pattern)
+	return !regex.MatchString(card.CardNumber)
 }

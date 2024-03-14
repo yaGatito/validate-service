@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"validate-service/src/models"
 	valerror "validate-service/src/models/error"
 	"validate-service/src/validators"
@@ -26,21 +27,29 @@ func HandleValidatePath(w http.ResponseWriter, r *http.Request) {
 
 func validateCard(w http.ResponseWriter, r *http.Request) {
 	// Deserialization
-	var requestBody models.ValidateRequest
-	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	cardNumber := r.URL.Query().Get("number")
+	cardMonthExpiration, err := strconv.Atoi(r.URL.Query().Get("month"))
+	cardYearExpiration, err := strconv.Atoi(r.URL.Query().Get("year"))
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	log.Printf("Validating card: %s", requestBody.CardNumber)
+	if &cardNumber == nil || &cardMonthExpiration == nil || &cardYearExpiration == nil {
+		http.Error(w, "Invalid parameters", http.StatusBadRequest)
+		return
+	}
+	log.Printf("Validating card: %s", cardNumber)
 
-	var valid bool
-	var errorObj *valerror.Error
-	var header int
-	var response models.ValidateResponse
+	var (
+		valid    bool
+		errorObj *valerror.Error
+		header   int
+		response models.ValidateResponse
+	)
 
 	// Validation
-	valid, errorObj = validators.ValidateCard(mapRequestToCard(requestBody))
+	valid, errorObj = validators.ValidateCard(Card(cardNumber, cardYearExpiration, cardMonthExpiration))
 
 	// Headers
 	if errorObj == nil {
@@ -54,12 +63,15 @@ func validateCard(w http.ResponseWriter, r *http.Request) {
 		switch errorObj.Code {
 		case valerror.Empty:
 			header = http.StatusBadRequest
+		case valerror.InvalidNumber:
+			header = http.StatusBadRequest
 		case valerror.Expired:
 			header = http.StatusBadRequest
 		case valerror.InvalidMonth:
 			header = http.StatusBadRequest
 		case valerror.InvalidYear:
 			header = http.StatusBadRequest
+
 		}
 		response = models.ValidateResponse{
 			Valid: valid,
@@ -75,11 +87,11 @@ func validateCard(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func mapRequestToCard(r models.ValidateRequest) models.Card {
+func Card(cardNum string, year int, month int) models.Card {
 	return models.Card{
-		CardNumber:          r.CardNumber,
-		CardYearExpiration:  r.CardYearExpiration,
-		CardMonthExpiration: r.CardMonthExpiration,
+		CardNumber:          cardNum,
+		CardYearExpiration:  year,
+		CardMonthExpiration: month,
 	}
 }
 

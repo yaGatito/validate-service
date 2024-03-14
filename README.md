@@ -20,14 +20,11 @@ Technical task for COMPANY.
 ## Usage
 Fork my postman [collection](https://elements.getpostman.com/redirect?entityId=20487409-5f38dab1-0cc5-41d8-9eb5-c0770ec5088a&entityType=collection) to be able to use prepared collection
 ### Schema:
-GET: /validate
-Acceptable body: 
+HTTP Method: GET
+URL: /validate
+Query params: number, year, month
 ```
-{
-    "number":"4111111111111111",
-    "year":2024,
-    "month":3
-}
+ex: http://localhost:8080/validate?number=123123123123&year=2026&month=2
 ```
 
 ## Configuration

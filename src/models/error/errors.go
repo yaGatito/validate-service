@@ -2,16 +2,18 @@ package error
 
 const (
 	Empty byte = 1 + iota
+	InvalidNumber
 	Expired
 	InvalidMonth
 	InvalidYear
 )
 
 const (
-	EmptyMessage        string = "Empty card number"
-	ExpiredMessage             = "Card is expired"
-	InvalidMonthMessage        = "Invalid month"
-	InvalidYearMessage         = "Invalid year"
+	EmptyMessage         string = "Empty card number"
+	InvalidNumberMessage        = "Card number invalid"
+	ExpiredMessage              = "Card is expired"
+	InvalidMonthMessage         = "Invalid month"
+	InvalidYearMessage          = "Invalid year"
 )
 
 type Error struct {
