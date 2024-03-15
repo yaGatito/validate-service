@@ -1,6 +1,6 @@
 # validate-service
 
-Technical task for COMPANY.
+Technical task.
 
 ## Table of Contents
 - [Installation](#installation)
